@@ -17,7 +17,7 @@ POLYBAR_VPN_CONNECTED_ICON="%{F#A3BE8C}󰯄%{F-}"
 POLYBAR_VPN_DISCONNECTED_ICON="%{F#D35F5E}󰯄%{F-}"
 
 # Создание директорий для хранения конфигураций и PID файлов, если они не существуют
-mkdir -p "$VPN_DIR" "$PID_DIR"КУ
+mkdir -p "$VPN_DIR" "$PID_DIR"
 
 # Функция для загрузки конфигурации
 upload_config() {
