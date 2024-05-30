@@ -49,7 +49,14 @@ delete_vpn_config() {
   if [ -f "$PID_FILE" ]; then
     PID=$(cat "$PID_FILE")
     if [ -n "$PID" ]; then
-      kill -9 "$PID"
+      # Отправляем сигнал SIGTERM для завершения процесса
+      kill "$PID"
+
+      # Ждем немного и проверяем, завершился ли процесс, если нет - принудительно завершаем
+      sleep 1
+      if kill -0 "$PID" 2>/dev/null; then
+        kill -9 "$PID"
+      fi
     fi
 
     # Удаляем файл с PID
@@ -73,8 +80,15 @@ disconnect_all_vpns() {
 
     VPN_PID=$(basename "$PID_PATH" .pid) # Получаем только имя файла VPN без расширения .pid
     PID=$(cat "$PID_PATH")
-    if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
-      sudo -S kill "$PID"
+    if [ -n "$PID" ]; then
+      # Отправляем сигнал SIGTERM для завершения процесса
+      kill "$PID"
+
+      # Ждем немного и проверяем, завершился ли процесс, если нет - принудительно завершаем
+      sleep 1
+      if kill -0 "$PID" 2>/dev/null; then
+        kill -9 "$PID"
+      fi
       notify-send "OpenVPN" "Disconnected from $VPN_PID"
     fi
     rm -f "$PID_PATH"
@@ -89,8 +103,15 @@ toggle_vpn() {
   if [ -f "$PID_FILE" ]; then
     # Если уже подключены к этому VPN, отключаемся
     PID=$(cat "$PID_FILE")
-    if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
-      sudo -S kill "$PID"
+    if [ -n "$PID" ]; then
+      # Отправляем сигнал SIGTERM для завершения процесса
+      kill "$PID"
+
+      # Ждем немного и проверяем, завершился ли процесс, если нет - принудительно завершаем
+      sleep 1
+      if kill -0 "$PID" 2>/dev/null; then
+        kill -9 "$PID"
+      fi
     fi
     rm -f "$PID_FILE"
     notify-send "OpenVPN" "Disconnected from $VPN"
